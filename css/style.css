@@ -1,0 +1,363 @@
+/* ----- global reset & base ----- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-dark: #0d0f14;
+  --card-bg: rgba(22, 26, 35, 0.85);
+  --border-glow: rgba(210, 180, 140, 0.2);
+  --gold: #c9a96e;
+  --gold-soft: #e6d5b8;
+  --text-light: #eee9e0;
+  --text-muted: #a8a09a;
+  --stoic-accent: #7a9e8c;
+  --mach-accent: #b87c5a;
+  --shadow-deep: 0 25px 40px -15px rgba(0, 0, 0, 0.7);
+}
+
+body {
+  background: radial-gradient(circle at 30% 10%, #1e1f26, #0b0c10);
+  color: var(--text-light);
+  font-family: "Cairo", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* subtle animated grain / particles */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  animation: slowShift 20s infinite alternate;
+}
+
+@keyframes slowShift {
+  0% {
+    opacity: 0.03;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.06;
+    transform: scale(1.05);
+  }
+}
+
+/* main container */
+.hub {
+  max-width: 1200px;
+  width: 100%;
+  z-index: 2;
+  position: relative;
+}
+
+/* header section */
+.hub-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+  animation: fadeSlideUp 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hub-header h1 {
+  font-family: "Amiri", serif;
+  font-size: clamp(2.6rem, 8vw, 4.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #f3e7d3, #b8a17e, #e9dbc0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(201, 169, 110, 0.3);
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+}
+
+.hub-header .sub {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  border-top: 1px solid rgba(201, 169, 110, 0.25);
+  display: inline-block;
+  padding-top: 1rem;
+  margin-top: 0.25rem;
+  max-width: 600px;
+}
+
+/* cards grid */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* card base */
+.course-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 2rem 2rem 2rem 2rem;
+  padding: 2.2rem 1.8rem 1.8rem;
+  border: 1px solid var(--border-glow);
+  box-shadow: var(--shadow-deep);
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1),
+    box-shadow 0.4s ease,
+    border-color 0.3s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  animation: cardReveal 0.7s ease backwards;
+  will-change: transform;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+}
+
+.course-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.course-card:nth-child(2) {
+  animation-delay: 0.25s;
+}
+.course-card:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes cardReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* shimmer effect on hover */
+.course-card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition:
+    opacity 0.5s,
+    transform 0.8s;
+  pointer-events: none;
+  transform: rotate(25deg);
+}
+
+.course-card:hover {
+  transform: translateY(-12px) scale(1.01);
+  border-color: rgba(201, 169, 110, 0.5);
+  box-shadow:
+    0 35px 50px -20px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(201, 169, 110, 0.2);
+}
+
+.course-card:hover::after {
+  opacity: 1;
+  transform: rotate(25deg) translate(10%, 10%);
+}
+
+/* individual card accent */
+.course-card.machiavelli {
+  border-top: 3px solid var(--mach-accent);
+}
+
+.course-card.stoicism {
+  border-top: 3px solid var(--stoic-accent);
+}
+
+/* card icon / symbol (SVG) */
+.card-icon {
+  width: 3.2rem;
+  height: 3.2rem;
+  margin-bottom: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s ease;
+}
+
+.card-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.course-card:hover .card-icon {
+  transform: scale(1.1) rotate(-2deg);
+}
+
+/* icon colors per course */
+.course-card.machiavelli .card-icon svg {
+  color: var(--mach-accent);
+}
+
+.course-card.stoicism .card-icon svg {
+  color: var(--stoic-accent);
+}
+
+/* card title */
+.card-title {
+  font-family: "Amiri", serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  background: linear-gradient(to left, #f1e7da, #cbb594);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 1.3rem;
+  font-weight: 400;
+  border-right: 3px solid var(--gold);
+  padding-right: 0.8rem;
+}
+
+.course-card.machiavelli .card-subtitle {
+  border-right-color: var(--mach-accent);
+}
+
+.course-card.stoicism .card-subtitle {
+  border-right-color: var(--stoic-accent);
+}
+
+/* description snippet */
+.card-desc {
+  font-size: 0.95rem;
+  color: #cfc8bf;
+  margin-bottom: 1.6rem;
+  flex: 1;
+  opacity: 0.9;
+}
+
+/* meta info */
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+  margin-top: auto;
+}
+
+.card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* arrow / CTA */
+.card-cta {
+  font-weight: 600;
+  color: var(--gold);
+  transition:
+    letter-spacing 0.3s,
+    color 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.course-card:hover .card-cta {
+  letter-spacing: 1px;
+  color: #f3e2c9;
+}
+
+.card-cta::after {
+  content: "←";
+  font-size: 1.2rem;
+  transition: transform 0.3s;
+}
+
+.course-card:hover .card-cta::after {
+  transform: translateX(-6px);
+}
+
+/* additional note / footer */
+.hub-footer {
+  margin-top: 3.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(201, 169, 110, 0.15);
+  padding-top: 1.8rem;
+  animation: fadeSlideUp 1s ease 0.4s backwards;
+}
+
+.hub-footer .quote {
+  font-family: "Amiri", serif;
+  font-size: 1.1rem;
+  color: #d9cfbf;
+  max-width: 500px;
+  margin: 0 auto 1rem;
+  line-height: 1.7;
+}
+
+/* animation keyframes for header */
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* responsive adjustments */
+@media (max-width: 650px) {
+  body {
+    padding: 1.5rem 1rem;
+  }
+  .hub-header h1 {
+    font-size: 2.4rem;
+  }
+  .course-card {
+    padding: 1.8rem 1.4rem 1.4rem;
+  }
+  .card-title {
+    font-size: 1.7rem;
+  }
+  .card-icon {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+}
+
+
